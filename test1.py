@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QTextEdit, QMainWindow, QVBoxLayout, QPushButton, QLabel, QWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QTextEdit, QMainWindow, QVBoxLayout, QPushButton, QLabel, QWidget, QFileDialog, QToolBar, QAction
 from PyQt5.QtWidgets import QHBoxLayout # QH = QHorizontal, QV = QVertical
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
@@ -15,6 +15,9 @@ class TextEditor(QMainWindow):
         # Create a QTextEdit for the text editing area
         self.text_edit = QTextEdit()
         self.setCentralWidget(self.text_edit)
+
+        # Endrer tekstområdet til mørkere design
+        self.text_edit.setStyleSheet("background-color: #333; color: white; border: 2px solid #555;")
 
         # Create buttons for open and save actions
         open_button = QPushButton('Open')
@@ -33,6 +36,12 @@ class TextEditor(QMainWindow):
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.text_edit)
         main_layout.addLayout(button_layout)
+
+        # Lager en toolbar
+        toolbar = QToolBar("Toolbar?")
+        self.addToolBar(toolbar)
+        file_action = QAction("Fil", self)
+        toolbar.addAction(file_action)
 
         # Create a central widget to hold the layout
         central_widget = QWidget()
