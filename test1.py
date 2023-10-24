@@ -19,29 +19,29 @@ class TextEditor(QMainWindow):
         # Endrer tekstområdet til mørkere design
         self.text_edit.setStyleSheet("background-color: #333; color: white; border: 2px solid #555;")
 
-        # Create buttons for open and save actions
-        open_button = QPushButton('Open')
-        save_button = QPushButton('Save')
+        # Lager en toolbar
+        toolbar = QToolBar("Toolbar?")
+        self.addToolBar(toolbar)
 
-        # Connect buttons to functions
-        open_button.clicked.connect(self.open_file)
-        save_button.clicked.connect(self.save_file)
+        # Lager open og save knapper til "fil
+        open_action = QAction("Open", self)
+        save_action = QAction("Save", self)
+
+        open_action.triggered.connect(self.open_file)
+        save_action.triggered.connect(self.save_file)
+
+        # Lager "fil"-knapp til toolbar
+        file_menu = self.menuBar().addMenu("File")
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
 
         # Create a layout for the buttons
         button_layout = QVBoxLayout()
-        button_layout.addWidget(open_button)
-        button_layout.addWidget(save_button)
 
         # Set up the main layout
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.text_edit)
         main_layout.addLayout(button_layout)
-
-        # Lager en toolbar
-        toolbar = QToolBar("Toolbar?")
-        self.addToolBar(toolbar)
-        file_action = QAction("Fil", self)
-        toolbar.addAction(file_action)
 
         # Create a central widget to hold the layout
         central_widget = QWidget()
@@ -49,7 +49,7 @@ class TextEditor(QMainWindow):
         self.setCentralWidget(central_widget)
 
         # Initialize the application window
-        self.setWindowTitle('Hobbyprosjekt')
+        self.setWindowTitle('Hobbyprosjekt 🙂')
         self.setGeometry(100, 100, 800, 600)
 
         self.keyPressEvent = self.close_with_esc
