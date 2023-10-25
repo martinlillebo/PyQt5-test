@@ -4,6 +4,23 @@ from PyQt5.QtWidgets import QHBoxLayout # QH = QHorizontal, QV = QVertical
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 
+
+# Skiller ut split screen til separat klasse
+class CustomSplitter(QSplitter):
+    def __init__(self):
+        super().__init__()
+        self.active_widget = None
+
+    def set_active_widget(self, widget):
+        self.active_widget = widget
+
+    def keyPressEvent(self, event):
+        print("keypressevent")
+        if event.key() == Qt.Key_Escape:
+            # Close the active split window
+            if self.active_widget:
+                self.active_widget.close()
+
 # Setter opp en editor-klasse
 class TextEditor(QMainWindow):
     def __init__(self):
@@ -18,13 +35,22 @@ class TextEditor(QMainWindow):
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         # Create a QTextEdit for the text editing area
-        splitter = QSplitter(self)
+        self.splitter = CustomSplitter()
+
         self.text_edit_1 = QTextEdit()
         self.text_edit_2 = QTextEdit()
-        self.setCentralWidget(self.text_edit_1)
 
-        splitter.addWidget(self.text_edit_1)
-        splitter.addWidget(self.text_edit_2)        
+
+
+        self.setCentralWidget(self.splitter)
+
+        self.splitter.addWidget(self.text_edit_1)
+        self.splitter.addWidget(self.text_edit_2)        
+
+        self.splitter.set_active_widget(self.text_edit_1)
+
+        self.text_edit_1.focusInEvent = lambda event: self.splitter.set_active_widget(self.text_edit_1)
+        self.text_edit_2.focusInEvent = lambda event: self.splitter.set_active_widget(self.text_edit_2)
 
         # Endrer tekstområdet til mørkere design
         self.text_edit_1.setStyleSheet("background-color: #333; color: white; border: 2px solid #555;")
@@ -55,23 +81,24 @@ class TextEditor(QMainWindow):
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         # Set up the main layout
-        main_layout = QVBoxLayout() # <-------- QVBOX = Vertikal orientering på widgetene
-        main_layout.addWidget(self.text_edit_1)
+        #main_layout = QVBoxLayout() # <-------- QVBOX = Vertikal orientering på widgetene
+        #main_layout.addWidget(self.text_edit_1)
 
         # Create a central widget to hold the layout
-#       central_widget = QWidget()
-        splitter.setLayout(main_layout)
-        self.setCentralWidget(splitter)
+        #central_widget = QWidget()
+        #splitter.setLayout(main_layout)
+        self.setCentralWidget(self.splitter)
 
         # Initialize the application window
         self.setWindowTitle('Hobbyprosjekt 🙂')
         self.setGeometry(100, 100, 800, 600)
 
-        self.keyPressEvent = self.close_with_esc
+        #self.keyPressEvent = self.close_with_esc
     
-    def close_with_esc(self, event):
-        if event.key() == Qt.Key_Escape:
-            app.quit()
+#    def close_with_esc(self, event):
+ #       if event.key() == Qt.Key_Escape:
+  #          #active_widget = splitter.currentWidget()
+   #         app.quit()
 
     def open_file(self):
         # Implement the open file function
@@ -79,7 +106,7 @@ class TextEditor(QMainWindow):
         if file_path:
             # Read the file and display its content in the QTextEdit
             with open(file_path, 'r') as file:
-                self.text_edit.setPlainText(file.read())
+                self.text_edit_1.setPlainText(file.read())
 
     def save_file(self):
         # Implement the save file function
@@ -87,10 +114,15 @@ class TextEditor(QMainWindow):
         if file_path:
             # Write the text from the QTextEdit to the selected file
             with open(file_path, 'w') as file:
-                file.write(self.text_edit.toPlainText())
+                file.write(self.text_edit_1.toPlainText())
+
+    def focusInEvent(self, event):
+        # Custom behavior when this widget gains focus
+        print("Gained focus!")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    # app.setCursorFlashTime(500)
     editor = TextEditor()
     editor.show()
     sys.exit(app.exec_())
