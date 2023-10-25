@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QTextEdit, QMainWindow, QVBoxLayout, QPushButton, QLabel, QWidget, QFileDialog, QToolBar, QAction
+from PyQt5.QtWidgets import QApplication, QTextEdit, QMainWindow, QVBoxLayout, QPushButton, QLabel, QWidget, QFileDialog, QToolBar, QAction, QSplitter
 from PyQt5.QtWidgets import QHBoxLayout # QH = QHorizontal, QV = QVertical
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
@@ -12,12 +12,27 @@ class TextEditor(QMainWindow):
 
     # Alt i initUI kjøres automatisk siden den kalles i konstruktoren ovenfor
     def initUI(self):
+
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        #                   TEXT EDIT AREAS                                 #
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
         # Create a QTextEdit for the text editing area
-        self.text_edit = QTextEdit()
-        self.setCentralWidget(self.text_edit)
+        splitter = QSplitter(self)
+        self.text_edit_1 = QTextEdit()
+        self.text_edit_2 = QTextEdit()
+        self.setCentralWidget(self.text_edit_1)
+
+        splitter.addWidget(self.text_edit_1)
+        splitter.addWidget(self.text_edit_2)        
 
         # Endrer tekstområdet til mørkere design
-        self.text_edit.setStyleSheet("background-color: #333; color: white; border: 2px solid #555;")
+        self.text_edit_1.setStyleSheet("background-color: #333; color: white; border: 2px solid #555;")
+        self.text_edit_2.setStyleSheet("background-color: #333; color: white; border: 2px solid #555;")
+
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        #                   TOOLBAR                                         #
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         # Lager en toolbar
         toolbar = QToolBar("Toolbar?")
@@ -35,18 +50,18 @@ class TextEditor(QMainWindow):
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
 
-        # Create a layout for the buttons
-        button_layout = QVBoxLayout()
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        #                   *******                                         #
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         # Set up the main layout
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(self.text_edit)
-        main_layout.addLayout(button_layout)
+        main_layout = QVBoxLayout() # <-------- QVBOX = Vertikal orientering på widgetene
+        main_layout.addWidget(self.text_edit_1)
 
         # Create a central widget to hold the layout
-        central_widget = QWidget()
-        central_widget.setLayout(main_layout)
-        self.setCentralWidget(central_widget)
+#       central_widget = QWidget()
+        splitter.setLayout(main_layout)
+        self.setCentralWidget(splitter)
 
         # Initialize the application window
         self.setWindowTitle('Hobbyprosjekt 🙂')
@@ -74,46 +89,8 @@ class TextEditor(QMainWindow):
             with open(file_path, 'w') as file:
                 file.write(self.text_edit.toPlainText())
 
-
-# app = QApplication(sys.argv)  # Create a PyQt5 application
-
-# window = TextEditor()  # Create the main application window
-# window.setWindowTitle('Widgets and Layouts')
-
-# central_widget = QWidget()  # Create a central widget
-# window.setCentralWidget(central_widget)  # Set it as the central widget
-
-# # Create widgets
-# label = QLabel('Hello, PyQt5!')
-# button = QPushButton('Click Me')
-# button.clicked.connect(lambda: label.setText('Button Clicked'))
-# button2 = QPushButton("test2")
-# lineTest = QLineEdit()
-
-# # Create a layout and add widgets to it
-# layout = QHBoxLayout(central_widget)  # Use central_widget as the parent
-# layout.addWidget(label)
-# layout.addWidget(button)
-# layout.addWidget(button2)
-# layout.addWidget(lineTest)
-
-# layout.setAlignment(Qt.AlignLeft)
-
-# Keypressevent som lukker vinduet om ESC trykkes
-
-
-
-
-# Kobler event-et til hovedvinduet
-# window.keyPressEvent = escapeEvent
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     editor = TextEditor()
     editor.show()
     sys.exit(app.exec_())
-
-
-# window.show()  # Display the main window
-#sys.exit(app.exec_())  # Start the application event loop
-
