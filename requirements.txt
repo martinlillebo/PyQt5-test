@@ -5,6 +5,9 @@ mccabe==0.7.0
 pep8==1.7.1
 platformdirs==3.11.0
 pylint==3.0.2
+PyQt5==5.15.10
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.13.0
 tomli==2.0.1
 tomlkit==0.12.1
 typing_extensions==4.8.0
